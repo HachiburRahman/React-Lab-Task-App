@@ -1,0 +1,12 @@
+
+@tailwind utilities;
+@tailwind utilities;
+
+/* Custom Design Tokens */
+:root {
+  --primary: #2563eb;
+  --secondary: #1e293b;
+  --accent: #f59e0b;
+  --bg: #f8fafc;
+  --card: #ffffff;
+}
