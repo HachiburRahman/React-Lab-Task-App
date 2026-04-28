@@ -1,87 +1,113 @@
 
 import './App.css'
-import DashboardHeader from "./components/DashboardHeader";
-import StudentCard from "./components/StudentCard";
+import { useEffect, useState } from "react";
+import DashboardHeader from "./Components/DashboardHeader";
+import StudentCard from "./Components/StudentCard";
+import SearchBar from "./Components/SearchBar";
 
-const students = [
+const mockStudents = [
   {
+    id: "1",
     name: "Hachibur Rahman",
-    id: "22-46426-1",
-    avatar: "https://i.pravatar.cc/150?img=1",
+    major: "CSE",
     gpa: 3.8,
-    major: "Computer Science & Engineering",
+    avatar: "https://i.pravatar.cc/150?img=1",
     credits: 120,
-    courses: [
-      { name: "React", color: "#e5e7eb" },
-      { name: "Node.js", color: "#e5e7eb" },
-    ],
+    courses: [{ name: "React" }, { name: "Node" }],
   },
   {
+    id: "2",
     name: "John Doe",
-    id: "22-12345-2",
-    avatar: "https://i.pravatar.cc/150?img=2",
-    gpa: 3.6,
     major: "Software Engineering",
-    credits: 110,
-    courses: [
-      { name: "Database", color: "#e5e7eb" },
-      { name: "DSA", color: "#e5e7eb" },
-    ],
-  },
-  {
-    name: "Jane Smith",
-    id: "22-54321-3",
-    avatar: "https://i.pravatar.cc/150?img=3",
-    gpa: 3.9,
-    major: "Artificial Intelligence",
-    credits: 130,
-    courses: [
-      { name: "Machine Learning", color: "#e5e7eb" },
-      { name: "Python", color: "#e5e7eb" },
-    ],
-  },
-  {
-    name: "Alex Kim",
-    id: "22-77777-4",
-    avatar: "https://i.pravatar.cc/150?img=4",
     gpa: 3.5,
+    avatar: "https://i.pravatar.cc/150?img=2",
+    credits: 110,
+    courses: [{ name: "DSA" }, { name: "DBMS" }],
+  },
+  {
+    id: "3",
+    name: "Jane Smith",
+    major: "Artificial Intelligence",
+    gpa: 3.9,
+    avatar: "https://i.pravatar.cc/150?img=3",
+    credits: 130,
+    courses: [{ name: "Machine Learning" }, { name: "Python" }],
+  },
+  {
+    id: "4",
+    name: "Alex Kim",
     major: "Cyber Security",
-    credits: 100,
-    courses: [
-      { name: "Networking", color: "#e5e7eb" },
-      { name: "Security Basics", color: "#e5e7eb" },
-    ],
+    gpa: 3.6,
+    avatar: "https://i.pravatar.cc/150?img=4",
+    credits: 115,
+    courses: [{ name: "Networking" }, { name: "Security" }],
+  },
+  {
+    id: "5",
+    name: "Sarah Ali",
+    major: "Data Science",
+    gpa: 3.7,
+    avatar: "https://i.pravatar.cc/150?img=5",
+    credits: 118,
+    courses: [{ name: "Statistics" }, { name: "ML" }],
+  },
+  {
+    id: "6",
+    name: "David Lee",
+    major: "Software Engineering",
+    gpa: 3.4,
+    avatar: "https://i.pravatar.cc/150?img=6",
+    credits: 105,
+    courses: [{ name: "Java" }, { name: "Spring Boot" }],
   },
 ];
 
 function App() {
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  // Simulated API
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setStudents(mockStudents);
+      setLoading(false);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const filteredStudents = students.filter((s) =>
+    s.name.toLowerCase().includes(search.toLowerCase()) ||
+    s.major.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      
-      {/* Header */}
-      <DashboardHeader />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
 
-      {/* Main Container */}
-      <main className="max-w-6xl mx-auto px-6 py-10">
+      <DashboardHeader total={filteredStudents.length} />
 
-        {/* Title Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-800">
-            Student Records
-          </h2>
-          <p className="text-sm text-gray-500">
-            Manage and view all registered students
-          </p>
-        </div>
+      <div className="max-w-6xl mx-auto px-6 py-8">
 
-        {/* Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {students.map((student, index) => (
-            <StudentCard key={index} {...student} />
-          ))}
-        </div>
+        <SearchBar search={search} setSearch={setSearch} />
 
-      </main>
+        {loading ? (
+          <div className="text-center text-gray-500 py-10">
+            Loading students...
+          </div>
+        ) : filteredStudents.length === 0 ? (
+          <div className="text-center text-gray-400 py-10">
+            No students found
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            {filteredStudents.map((student) => (
+              <StudentCard key={student.id} student={student} />
+            ))}
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }
